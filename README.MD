@@ -1,5 +1,4 @@
-# BlueJ IDE opt-in software tool extension 'roles of variables' updated (Sajaniemi, 2006)
-version
+### BlueJ IDE opt-in software tool extension 'roles of variables' updated (Sajaniemi, 2006) version
 
 AUTHORS: Andreas Nikolakopoulos
 
