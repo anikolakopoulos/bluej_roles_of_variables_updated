@@ -3,6 +3,7 @@
 *.class
 *.ctxt
 DS.java#
+Thumbs.db
 .classpath
 package.bluej
 
