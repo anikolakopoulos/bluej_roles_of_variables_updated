@@ -36,19 +36,7 @@ public class RoleAnalyser {
             "Number.java", "Occur.java", "ProgramTime.java", "Saw.java",
             "SmoothedAverage.java", "Square.java", "TwoLargest.java", "Bank.java",
             "SalesApplication.java", "Animals.java", "School.java", 
-            "App.java", "Apps.java", "DeleteNodes.java",
-            "QuestionCellRenderer.java", "TreeExample1", "TreeExample2",
-            "EditableTree.java", "MainClass.java", "BinarySearchExample.java", 
-            "Puzzle_007.java", "GraphTraversals.java", "TreeExpansionListenerDemo.java",
-            "BinaryTree.java", "TreeIconDemo", "TreeIconDemo2.java",
-            "SinglyLinkedListInsertDeleteLastExample.java", "QueueLinkedList.java",
-            "MyBinarySearch.java", "methods.java", "Lesson27.java", 
-            "SelectableTree.java", "LinkedList.java",
-            "PostPreorderAndDepthEnumeration.java", "Assignment4.java",
-            "Apps_I.java", "Rational.java", "Application.java",
-            "ArralistIteratorExample.java", "Sanakirja.java", "BinarySearch.java",
-            "EditableTrees.java", "hw_7.java", "MainRandom.java",
-            "ScannerNextDemo.java"};
+            "Median.java", "Palindrome.java", "Sum.java"};
 
     private static final String[] ROLES = { "Fixed Value", "Organizer",
             "Stepper", "Most Recent Holder", "Gatherer", "Most Wanted Holder",
