@@ -5,7 +5,7 @@ import java.util.LinkedHashMap;
 import java.util.*;
 
 /**
- * @author cbishop
+ * @author anikolakopoulos
  */
 public class Walker extends RoleChecker {
 

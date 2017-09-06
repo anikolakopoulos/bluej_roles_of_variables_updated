@@ -8,9 +8,6 @@ import java.util.Set;
 
 import main.progAnal.ConditionChecker;
 
-/**
- * @author cbishop
- */
 public abstract class RoleChecker {
 
     protected String variable;
@@ -94,8 +91,6 @@ public abstract class RoleChecker {
 
     protected ArrayList isMostRecentSmStmntElement;
     
-    protected ArrayList isMostRecentScannerElement;
-
     protected ArrayList isSwitchMostRecentElement;
 
     protected ArrayList isStepperElement;
@@ -173,8 +168,6 @@ public abstract class RoleChecker {
 
     protected boolean isMostRecentSmStmntVariable;
     
-    protected boolean isMostRecentScannerVariable;
-
     protected boolean isSwitchMostRecentVariable;
 
     protected boolean isStepperVariable;
@@ -319,8 +312,6 @@ public abstract class RoleChecker {
 
         isMostRecentSmStmntVariable = false;
         
-        isMostRecentScannerVariable = false;
-
         isSwitchMostRecentVariable = false;
 
         isStepperVariable = false;
@@ -418,8 +409,6 @@ public abstract class RoleChecker {
 
         isMostRecentSmStmntElement = conditionChecker.inpRndmSameCheck();
         
-        isMostRecentScannerElement = conditionChecker.inputRandomCheckScanner();
-
         isSwitchMostRecentElement = conditionChecker.switchCheck();
 
         isStepperElement = conditionChecker.stepperCheck();
@@ -517,8 +506,6 @@ public abstract class RoleChecker {
             isInpRandMostRecentVariable = true;
         if (isMostRecentSmStmntElement.size() > 0)
             isMostRecentSmStmntVariable = true;
-        if (isMostRecentScannerElement.size() > 0)
-            isMostRecentScannerVariable = true;
         if (isSwitchMostRecentElement.size() > 0)
             isSwitchMostRecentVariable = true;
         if (isStepperElement.size() > 0)
@@ -801,9 +788,6 @@ public abstract class RoleChecker {
         } else if (isWalkerMostRecentVariable) {
             isMostRecentHolder = true;
             setMessage(19);
-        } else if (isMostRecentScannerVariable) {
-            isMostRecentHolder = true;
-            setMessage(25); 
         } else if (isWalkerVariable) {
             isMostRecentHolder = false;
             setMessage(17);
@@ -857,7 +841,7 @@ public abstract class RoleChecker {
         } else if (isEnumarationIteratVariable) {
             isMostRecentHolder = false;
             setMessage(26); 
-        } else if (isTransform && (isInpRandMostRecentVariable || isMostRecentScannerVariable)) {
+        } else if (isTransform && isInpRandMostRecentVariable) {
             isMostRecentHolder = true;
             setMessage(6);
         } else if (incDecStatement) {
@@ -884,9 +868,12 @@ public abstract class RoleChecker {
         } else if (isTransform && assignedBeforeUse && !usedOutsideAssign) {
             isMostRecentHolder = false;
             reason = "variable is assigned in loop before its use and is not used outside of its assignment loop";
+        } else if (!assignedInLoop) {
+            isMostRecentHolder = false;
+            setMessage(12);
         } else if (!methodAssignment && !otherAssign) {
             isMostRecentHolder = false;
-            setMessage(10);
+            reason = "always assigned in loop with value of other variable";
         } else if (!usedInAssignLoop && (!conditionalUseInAssign || assignmentLoopConditionUse)) {
             isMostRecentHolder = false;
             Set keySet = assignmentsInLoop.keySet();
@@ -1416,6 +1403,9 @@ public abstract class RoleChecker {
         } else if (isAssignedInForEach) {             
             isContainer = false;
             setMessage(23);
+        } else if (!assignedInLoop) {
+            isContainer = false;
+            setMessage(12);
         } else if (isInpRandMostRecentVariable) {
             isContainer = false;
             setMessage(25);
@@ -1459,9 +1449,6 @@ public abstract class RoleChecker {
         } else if (isEnumarationIteratVariable ) { 
             isWalker = true;
             setMessage(26);
-        } else if (isMostRecentScannerVariable) {
-            isWalker = false;
-            setMessage(25); 
         } else if (isWalkerVariable) {
             isWalker = true;
             setMessage(17);

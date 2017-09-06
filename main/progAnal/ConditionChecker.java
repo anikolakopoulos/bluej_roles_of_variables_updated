@@ -2,16 +2,14 @@ package main.progAnal;
 
 import java.util.*;
 import java.util.regex.Pattern;
+import java.util.regex.Matcher;
 
 import main.RoleAnalyser;
-
-import java.util.regex.Matcher;
 
 
 /**
  * Class to check conditions under which variables are assigned and used
  * 
- * @author cbishop
  */
 public class ConditionChecker extends ProgramAnalyser {
 
@@ -63,7 +61,6 @@ public class ConditionChecker extends ProgramAnalyser {
     public boolean onlyOneAssignmentStatement() {
         boolean onlyOneAssignment = false;
         HashMap assignmentWhereaboutsMap = (HashMap) analysedMap.get("assignment");
-        //System.out.println(analysedMap.get("assignment"));
         if (assignmentWhereaboutsMap.size() <= 1) {
             onlyOneAssignment = true;
         }
@@ -165,7 +162,6 @@ public class ConditionChecker extends ProgramAnalyser {
                 foundInAssignmentLoop.put(statement, specificStatement);
             }
         }
-        //System.out.println(foundInAssignmentLoop);
         return foundInAssignmentLoop;
     }
 
@@ -219,7 +215,6 @@ public class ConditionChecker extends ProgramAnalyser {
             returnArray.add(1, assigns.get(0));
            
         }
-        //System.out.println(returnArray);
         return returnArray;
     }
 
@@ -248,7 +243,6 @@ public class ConditionChecker extends ProgramAnalyser {
                 }
             }
         }
-        //System.out.println(useForLoopCondition);
         return useForLoopCondition;
     }
 
@@ -298,10 +292,10 @@ public class ConditionChecker extends ProgramAnalyser {
                             bracketCount--;
                         }
                     }
-                    //System.out.println(loopStatement);
+                    
                 }
             }
-            //System.out.println(statementInLoop);
+            
         }
         return indirectUse;
     }
@@ -402,7 +396,6 @@ public class ConditionChecker extends ProgramAnalyser {
             if (conditionalAssignment)
                 conditionForAssignmentBranch.put(assignmentStatement, conditionAssignment);
         }
-        //System.out.println(conditionForAssignmentBranch);
         return conditionForAssignmentBranch;
     }
 
@@ -457,7 +450,6 @@ public class ConditionChecker extends ProgramAnalyser {
                 conditionForAssignmentBranch.put(statement, conditionAssignment);
             }
         }
-        //System.out.println(conditionForAssignmentBranch);
         return conditionForAssignmentBranch;
     }
 
@@ -488,7 +480,6 @@ public class ConditionChecker extends ProgramAnalyser {
                 returnArray.add(statement);
             }
         }
-        //System.out.println(returnArray);
         return returnArray;
     }
 
@@ -546,7 +537,6 @@ public class ConditionChecker extends ProgramAnalyser {
         && !subString(afterEquals, "!" + variable)) {
             toggleStatement = true;
         }
-        //System.out.println(toggleStatement);
         return toggleStatement;
     }
 
@@ -626,7 +616,6 @@ public class ConditionChecker extends ProgramAnalyser {
                 outsideAssignLoop.put(statement, specificOccuranceOutside);
             }
         }
-        //System.out.println(outsideAssignLoop);
         return outsideAssignLoop;
     }
 
@@ -686,7 +675,6 @@ public class ConditionChecker extends ProgramAnalyser {
                 }
             }
         }
-        //System.out.println(isArray);
         return isArray;
     }
 
@@ -723,7 +711,6 @@ public class ConditionChecker extends ProgramAnalyser {
                }
             }
         }
-        //System.out.println(isArrayFixedValue);
         return isArrayFixedValue;
     }
 
@@ -743,7 +730,6 @@ public class ConditionChecker extends ProgramAnalyser {
                 }
             }
         }
-        //System.out.println(isSwitch);
         return isSwitch;
     }
 
@@ -776,7 +762,6 @@ public class ConditionChecker extends ProgramAnalyser {
               }
            }
         }
-        //System.out.println(isStepper);
         return isStepper;
     }
 
@@ -816,7 +801,6 @@ public class ConditionChecker extends ProgramAnalyser {
               }
            }
         }
-        //System.out.println(isGatherer);
         return isGatherer;
     }
     
@@ -851,7 +835,6 @@ public class ConditionChecker extends ProgramAnalyser {
                  }
             }
         }
-        //System.out.println(isOneWayFlag);
         return isOneWayFlag;
     }
     
@@ -880,6 +863,24 @@ public class ConditionChecker extends ProgramAnalyser {
         return y;
     }
     
+    public boolean checkScannerNextValue(HashMap setScannerNext){
+        boolean found = false;
+        for(Object entry : setScannerNext.values()){
+            if(entry instanceof ArrayList){
+                if(((ArrayList)entry).get(0) instanceof String){
+                    if(((String)((ArrayList)entry).get(0)).contains("new Scanner(System.in);")){
+                        found = true;
+                        return found;
+                    }
+                }
+            } else if(entry instanceof Map){
+                HashMap hashMap = (HashMap) entry;
+                return checkScannerNextValue(hashMap);
+            }
+        }
+        return found;
+    }
+    
     /**
      * Return list of statements where variable appears to be being used like an
      * 'input' or alternatively as a 'random' number
@@ -897,7 +898,7 @@ public class ConditionChecker extends ProgramAnalyser {
              String statement = (String) it.next();         
              String noSpace = removeSpaces(statement);
              String afterEquals = afterEquals(noSpace);
-                if (contains(afterEquals, ".nextDouble()")
+             if (contains(afterEquals, ".nextDouble()")  
                  || contains(afterEquals, ".nextBoolean()") || contains(afterEquals, ".nextInt()") 
                  || contains(afterEquals, ".nextBigInteger()") || contains(afterEquals, ".nextShort()")
                  || contains(afterEquals, ".readByte();") || contains(afterEquals, ".readDouble()")
@@ -910,55 +911,31 @@ public class ConditionChecker extends ProgramAnalyser {
                  &&!subString(noSpace, variable)) {
                      isInput.add(statement);
                      break;
+              } else if (contains(afterEquals, ".next()")) {
+                  if(checkScannerNextValue(sourceSorter)){
+                      isInput.add(statement);
+                      break;
+                  }
               } 
            }
         }
-        //System.out.println(isInput);
         return isInput;
     }
     
-    /**
-     * Return list of statements where variable appears to be being used like an
-     * Scanner 'input' 
-     * 
-     * @return ArrayList
-     */
-    public ArrayList inputRandomCheckScanner() {
-        ArrayList isInputScanner = new ArrayList();
-        String[] whatInputScanner = {"assignment", "usage", "conditional", "other"};
-        for (int i = 0; i < whatInputScanner.length; i++) {
-           HashMap whereaboutsMap = (HashMap) analysedMap.get(whatInputScanner[i]);
-           Set statementSet = whereaboutsMap.keySet();
-           Iterator it = statementSet.iterator();
-           while (it.hasNext()) {
-             String statement = (String) it.next();         
-             String noSpace = removeSpaces(statement);
-             String afterEquals = afterEquals(noSpace);
-             String strn = checkNonIterator(isInputScanner);
-              if (contains(afterEquals, strn + ".next();")) {
-                     isInputScanner.add(statement);
-                     break;
-              } 
-           }
-        }
-        //System.out.println(isInputScanner);
-        return isInputScanner;
-    }
-    
     public boolean checkForDuplicates(HashMap setWithDuplicates){
-    	boolean found = false;
+        boolean found = false;
         for(Object entry : setWithDuplicates.values()){
-        	if(entry instanceof ArrayList){
-        		if(((ArrayList)entry).size() > 1){
-        			if(!((ArrayList)entry).contains("break;")){
-	        			found = true;
-	        			return found;
-        			}
+            if(entry instanceof ArrayList){
+                if(((ArrayList)entry).size() > 1){
+                    if(!((ArrayList)entry).contains("break;")){
+                        found = true;
+                        return found;
+                    }
                 }
-        	} else if(entry instanceof Map){
-        		HashMap hashMap = (HashMap) entry;
-        		return checkForDuplicates(hashMap);
-        	}
+            } else if(entry instanceof Map){
+                HashMap hashMap = (HashMap) entry;
+                return checkForDuplicates(hashMap);
+            }
         }
         return found;
     }
@@ -981,7 +958,6 @@ public class ConditionChecker extends ProgramAnalyser {
                 String statement = (String) it.next();         
                 String noSpace = removeSpaces(statement);
                 String afterEquals = afterEquals(noSpace);     
-                String strn = checkNonIterator(isInput);
                 boolean found = checkForDuplicates(sourceSorter);  
                    if((found) 
                     &&(contains(afterEquals, ".nextLine()") || contains(afterEquals, ".nextLong()")
@@ -999,67 +975,33 @@ public class ConditionChecker extends ProgramAnalyser {
                     &&!subString(noSpace, variable))) {
                         isInput.add(statement);
                         break;
-                }  else if ((found) && contains(afterEquals, strn + ".next();")) {
+                }  else if ((found) && contains(afterEquals, ".next()")) {
+                     if(checkScannerNextValue(sourceSorter)){
                         isInput.add(statement);
                         break;
-              } 
+                  }
+                }
             }
         }
-        //System.out.println(isInput);
         return isInput;
     }
-
-    private String checkNonIterator(ArrayList list) {
-        ArrayList values = new ArrayList();
-        String[] whatNonIterator = { "assignment", "usage", "conditional", "other" };
-        String x = null;
-        Object z = null; 
-        String y = null;
-        for (int i = 0; i < whatNonIterator.length; i++) {
-            HashMap whereaboutsMap = (HashMap) analysedMap.get(whatNonIterator[i]);
-            Set statementSet = whereaboutsMap.keySet();
-            Iterator it = statementSet.iterator();
-            while (it.hasNext()) {
-                String statement = (String) it.next();
-                String noSpace = removeSpaces(statement);
-                String afterEquals = afterEquals(noSpace);
-                if (contains(noSpace, "Scanner" + variable)) {
-                    x = variable;
-                    values.add(x);
-                    z = values.get(0);
-                    y = z.toString();
-                }        
-            }
-        }
-        //System.out.println(values);
-        return y;
-    }
     
-    private String checkNonScanner(ArrayList list) {
-        ArrayList values = new ArrayList();
-        String[] whatNonScanner = { "assignment", "usage", "conditional", "other" };
-        String x = null;
-        Object z = null; 
-        String y = null;
-        for (int i = 0; i < whatNonScanner.length; i++) {
-            HashMap whereaboutsMap = (HashMap) analysedMap.get(whatNonScanner[i]);
-            Set statementSet = whereaboutsMap.keySet();
-            Iterator it = statementSet.iterator();
-            while (it.hasNext()) {
-                String statement = (String) it.next();
-                String noSpace = removeSpaces(statement);
-                String afterEquals = afterEquals(noSpace);
-                if ( (contains(noSpace, "Iterator" + variable) || contains(noSpace, "Iterator<String>" + variable)) 
-                  && !contains(noSpace, "Scanner" + variable)) {
-                    x = variable;
-                    values.add(x);
-                    z = values.get(0);
-                    y = z.toString();
-                }        
+    public boolean checkIteratorNextValue(HashMap setIteratorNext){
+        boolean found = false;
+        for(Object entry : setIteratorNext.values()){
+            if(entry instanceof ArrayList){
+                if(((ArrayList)entry).get(0) instanceof String){
+                    if(((String)((ArrayList)entry).get(0)).contains(".iterator();")){
+                        found = true;
+                        return found;
+                    }
+                }
+            } else if(entry instanceof Map){
+                HashMap hashMap = (HashMap) entry;
+                return checkIteratorNextValue(hashMap);
             }
         }
-        //System.out.println(values);
-        return y;
+        return found;
     }
     
     public ArrayList isEnumerationIteratorCheck() {
@@ -1073,19 +1015,19 @@ public class ConditionChecker extends ProgramAnalyser {
                 String statement = (String) it.next();
                 String noSpace = removeSpaces(statement);
                 String afterEquals = afterEquals(noSpace);
-                String value = checkNonScanner(isEnumerationIterator);
-                  if ((contains(noSpace, "Node)") || contains(noSpace, "String" + variable + "=")
+                if ((contains(noSpace, "Node)") || contains(noSpace, "String" + variable + "=")
                     || contains(noSpace, "Object" + variable + "=")) && (contains(afterEquals, ".nextElement();")
                     || contains(afterEquals, ".previous();"))) {
                     isEnumerationIterator.add(statement);
                     break;
-                } else if (contains(afterEquals, value + ".next();")) {
+                } else if (contains(afterEquals, ".next()")) {
+                  if(checkIteratorNextValue(sourceSorter)){
                     isEnumerationIterator.add(statement);
                     break;
-                } 
+                  }
+              } 
             }
         }
-        //System.out.println(isEnumerationIterator);
         return isEnumerationIterator;
     }
     
@@ -1116,15 +1058,12 @@ public class ConditionChecker extends ProgramAnalyser {
                 || contains(noSpace, "double" + variable + "=")
                 || contains(noSpace, "double" + variable + ";")
                 &&!contains(noSpace, variable + "[") && !contains(noSpace, "]" + variable)
-                //&&!contains(noSpace, variable + "++") && !contains(noSpace, variable + "--")
-                //&&!contains(noSpace, variable + "**") && !contains(noSpace, variable + "\\")
                 &&!subString(noSpace, variable)) {
                     isPrimitive.add(statement);
                     break;
                 } 
             }
         }
-        //System.out.println(isPrimitive);
         return isPrimitive;
     }
 
@@ -1167,7 +1106,6 @@ public class ConditionChecker extends ProgramAnalyser {
                 } 
             }
         }
-        //System.out.println(isContainer);
         return isContainer;
     }
 
@@ -1234,7 +1172,6 @@ public class ConditionChecker extends ProgramAnalyser {
                 }
             }
         }
-        //System.out.println(isWalker);
         return isWalker;
     }
 
@@ -1261,7 +1198,6 @@ public class ConditionChecker extends ProgramAnalyser {
                 } 
             }
         }
-        //System.out.println(isFixedValueNegative);
         return isFixedValueNegative;
     }
 
@@ -1297,7 +1233,6 @@ public class ConditionChecker extends ProgramAnalyser {
                 } 
             }
         }
-        //System.out.println(isFixedValueNotWalker);
         return isFixedValueNotWalker;
     }
     
@@ -1338,7 +1273,6 @@ public class ConditionChecker extends ProgramAnalyser {
               }
             }
          }
-        //System.out.println(isWalkerMostRecent);
         return isWalkerMostRecent;
     }
 
@@ -1373,7 +1307,6 @@ public class ConditionChecker extends ProgramAnalyser {
                 }
             }
         }
-        //System.out.println(iswalkerCheckCurrent);
         return iswalkerCheckCurrent;
     }
 
@@ -1419,7 +1352,6 @@ public class ConditionChecker extends ProgramAnalyser {
                 } 
             }  
         }
-        //System.out.println(isWalkerObjectElement);
         return isWalkerObjectElement;
     }
 
@@ -1450,7 +1382,6 @@ public class ConditionChecker extends ProgramAnalyser {
                 }
             }  
         }
-        //System.out.println(isObjectElement);
         return isObjectElement;
     }
 
@@ -1474,7 +1405,6 @@ public class ConditionChecker extends ProgramAnalyser {
                 returnArray.add(statement);
             } 
         }
-        //System.out.println(returnArray);
         return returnArray;
     }
 
@@ -1559,7 +1489,6 @@ public class ConditionChecker extends ProgramAnalyser {
         if (compareArray.size() > 4) {
             returnArray = compareStatements(compareArray);
         }
-        //System.out.println(returnArray);
         return returnArray;
     }
 
@@ -1634,7 +1563,6 @@ public class ConditionChecker extends ProgramAnalyser {
                 }
             }
         }
-        //System.out.println(returnArray);
         return returnArray;
     }
 
@@ -1670,7 +1598,6 @@ public class ConditionChecker extends ProgramAnalyser {
                 }
             }
         }
-        //System.out.println(returnArray);
         return returnArray;
     }
 
@@ -1701,7 +1628,6 @@ public class ConditionChecker extends ProgramAnalyser {
 
             }
         }
-        //System.out.println(returnArray);
         return returnArray;
     }
     

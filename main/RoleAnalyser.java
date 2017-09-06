@@ -15,28 +15,37 @@ import main.progAnal.StatementGetter;
 import main.progAnal.ProgramSlicer;
 import main.rules.RuleApplyer;
 
-/**
- * @author cbishop
- * 
- * Main class to run role analyser program
- */
 public class RoleAnalyser {
-    //private final static int ITERATIONS = 10;
-    //long start = System.currentTimeMillis();
-    
+       
     private SourceSorter sourceSorter;
 
     private LinkedHashMap brokenSource;
 
     private StatementGetter statementGetter;
 
-    private static final String[] PROGRAMS = { "BubbleSort.java", "Closest.java",
+    private static final String[] PROGRAMS = { //Joensuu University examples
+                                               "BubbleSort.java", "Closest.java",
             "DiceGame.java", "DivMod7.java", "Doubles.java", "Fibonacci.java",
             "Growth.java", "Histogram.java", "Lexical.java", "Multiplication.java",
             "Number.java", "Occur.java", "ProgramTime.java", "Saw.java",
             "SmoothedAverage.java", "Square.java", "TwoLargest.java", "Bank.java",
-            "SalesApplication.java", "Animals.java", "School.java", 
-            "Median.java", "Palindrome.java", "Sum.java"};
+            "SalesApplication.java", "Animals.java", "School.java", "Median.java",
+	    "Palindrome.java", "Sum.java",  
+        // other examples (including sources as suggested by Joensuu University's references)
+		                               "App.java", "Apps.java", 
+	    "DeleteNodes.java", "QuestionCellRenderer.java", "TreeExample1", 
+	    "TreeExample2", "EditableTree.java", "MainClass.java",
+	    "BinarySearchExample.java", "Puzzle_007.java", 
+	    "GraphTraversals.java", "TreeExpansionListenerDemo.java",
+            "BinaryTree.java", "TreeIconDemo", "TreeIconDemo2.java",
+            "SinglyLinkedListInsertDeleteLastExample.java", "QueueLinkedList.java",
+            "MyBinarySearch.java", "methods.java", "Lesson27.java", 
+            "SelectableTree.java", "LinkedList.java",
+            "PostPreorderAndDepthEnumeration.java", "Assignment4.java",
+            "Apps_I.java", "Rational.java", "Application.java",
+            "ArralistIteratorExample.java", "Sanakirja.java", "BinarySearch.java",
+            "EditableTrees.java", "hw_7.java", "MainRandom.java",
+            "ScannerNextDemo.java"};
 
     private static final String[] ROLES = { "Fixed Value", "Organizer",
             "Stepper", "Most Recent Holder", "Gatherer", "Most Wanted Holder",
@@ -46,32 +55,21 @@ public class RoleAnalyser {
     
     private File[] files;
 
-	public RoleAnalyser(File[] inputFiles) //should input name of file to check
-	// here
+	public RoleAnalyser(File[] inputFiles) //should input name of file to check here
 	{
 		files = inputFiles;
 	}
                                
-    public RoleAnalyser() //should input name of file to check    // here
+    public RoleAnalyser() //should input name of file to check here
     {
 
     }
-    
-    /*
-    private File[] files;
-
-    public RoleAnalyser(File[] inputFiles) // should input name of file to check
-    // here
-    {
-    files = inputFiles;
-    }
-     */
     
     public static void main(String[] args) {
 
         RoleAnalyser roleAnalyser = new RoleAnalyser();
         roleAnalyser.checkRoles();
-
+		
     }
     
     /**
@@ -81,44 +79,27 @@ public class RoleAnalyser {
      */
     public HashMap checkRoles() {
         HashMap returnMap = new HashMap();
-        //for (int y = 0; y < ITERATIONS; ++y) {
             for (int i = 0; i < files.length; i++) {
                 ArrayList fileResults = new ArrayList();
                 String fileName = files[i].toString();
                 roleMap = initialiseMap();
-                //System.out.println(getSortedSource(fileName));
                 brokenSource = getSortedSource(fileName);
-                //printer.printSource(brokenSource);//debug
-                //System.out.println(getVariables());
                 Set variables = getVariables();
-                //System.out.println(getStatementMap(brokenSource, variables));
                 LinkedHashMap variableStatements = getStatementMap(brokenSource, variables);
                 RoleHolder roleHolder = sourceSorter.getRoleHolder();
-                //System.out.println(roleHolder.getRoles());
                 LinkedHashMap roles = roleHolder.getRoles();
-                //System.out.println(sortStatements(variables, variableStatements));
                 HashMap sortedStatements = sortStatements(variables, variableStatements);
-                //System.out.println(getStatementAnalysis(sortedStatements,variables));
                 HashMap analysedStatements = getStatementAnalysis(sortedStatements,variables);
-                //printer.printAnalysedStatements(analysedStatements); //debug
-                //System.out.println(getMethods(sortedStatements));
                 ArrayList methods = getMethods(sortedStatements);
-                System.out.println(getResults(analysedStatements, roles, methods, brokenSource));
                 HashMap checkedRoles = getResults(analysedStatements, roles, methods, brokenSource);
-                fileResults.add(checkedRoles); //add results of analysis for given
-                // file
-                fileResults.add(roles); //add annotated roles for each variable in
-                // given file
+                fileResults.add(checkedRoles); //add results of analysis for given file
+                fileResults.add(roles); //add annotated roles for each variable in given file
                 returnMap.put(files[i].getName(), fileResults); //add fileResults
                 // to return map for given file
-            //}           
+                  
         }
         
         returnMap.put("role map", roleMap); //add role map to return map
-        //System.out.println(returnMap);
-        //long elapsed = System.currentTimeMillis() - start;
-        //long average = elapsed / ITERATIONS;
-        //System.out.println("It took " + average + " milliseconds");
         return returnMap;
     }
 

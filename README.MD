@@ -2,7 +2,7 @@
 
 #### AUTHORS: Andreas Nikolakopoulos
 
-The purpose of this project was dual:  
+The purpose of this project was twofold:  
 
 ☑ To upgrade the tool’s outdated list of data entities roles with the updated version of Sajaniemi (2006), analogously to the exhortations of (Sajaniemi et al. [2006b, pp.274-275]; Heikkilä [2008, pp.4-13]); i.e., removing the 'transformation' and adding the 'walker' and the 'container' data entities' roles.
 

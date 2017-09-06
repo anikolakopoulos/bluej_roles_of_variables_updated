@@ -1,13 +1,10 @@
-/*
- * Created on 20-Jun-2005
- */
 package main.rules;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 
 /**
- * @author cbishop
+ * @author anikolakopoulos
  */
 public class Container extends RoleChecker {
 
