@@ -687,7 +687,6 @@ public class ConditionChecker extends ProgramAnalyser {
     public ArrayList arrayFixedValueCheck() {
         ArrayList isArrayFixedValue = new ArrayList();
         String[] whatArrayFixedValue = { "assignment", "usage", "conditional", "other" };
-        String[] numbers = {"0","1","2","3","4","5","6","7","8","9"};
         for (int i = 0; i < whatArrayFixedValue.length; i++) {
             HashMap whereaboutsMap = (HashMap) analysedMap.get(whatArrayFixedValue[i]);
             Set statementSet = whereaboutsMap.keySet();
@@ -696,7 +695,6 @@ public class ConditionChecker extends ProgramAnalyser {
                 String statement = (String) it.next();         
                 String noSpace = removeSpaces(statement);
                 String afterEquals = afterEquals(noSpace);
-                for(String digit : numbers) {
                     if (contains(noSpace, variable + "[") || contains(noSpace, "]" + variable)
                      && contains(afterEquals, "new") && contains(afterEquals, "[") 
                      && contains(afterEquals, "]") && !subString(noSpace, variable)) {
@@ -708,8 +706,7 @@ public class ConditionChecker extends ProgramAnalyser {
                         isArrayFixedValue.add(statement);
                         break;
                   } 
-               }
-            }
+             }
         }
         return isArrayFixedValue;
     }
